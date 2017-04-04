@@ -6,8 +6,8 @@ source("https://bioconductor.org/biocLite.R")
 biocLite(c("Biostrings",
            "DECIPHER"))
 
+suppressMessages(library(quiet=TRUE,"mclust"))
 library(quiet=TRUE,"rgl")
-library(quiet=TRUE,"mclust")
 library(quiet=TRUE,"ggplot2")
 library(quiet=TRUE,"Biostrings")
 library(quiet=TRUE,"DECIPHER")
