@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "plot_3Dclusters <- function(SAPCA,\n                            plotPCs    = 1:3,\n                            col        = \"cluster\",\n                            radius     = 1,\n                            labels     = NULL,\n                            write      = FALSE,\n                            axeslabels = \"default\"){\n  if (!is.null(SAPCA$seq.space.PCA$coordinates)){\n    data <- SAPCA$seq.space.PCA$coordinates\n  }else{\n    data <- SAPCA    \n  }\n  \n  if (all(col==\"cluster\")){\n    colour <- SAPCA$seq.space.clusters$classification\n  }else{\n    colour <- col\n  }\n  # Calculate radius size\n  rad <- (range(SAPCA$seq.space.PCA$coordinates[,plotPCs])[2]-range(SAPCA$seq.space.PCA$coordinates[,plotPCs])[1])/100\n  rad <- rad*radius\n  \n  if (all(axeslabels==\"default\")){\n    axes <- paste(\"PC\",plotPCs,sep=\"\")\n  }else{\n    axes <- axeslabels\n  }\n  if (is.null(axeslabels)){\n    axes <- c(\"\",\"\",\"\")\n  }\n    \n  # Plot model-based clusters in 3D\n  rgl::plot3d(data[,plotPCs],\n              col      = colour,      # colour by clusters\n              specular = \"black\",     # matte lighting\n              type     = \"s\",         # \"p\" is points, \"s\" is spheres\n              radius   = rad,         # sphere radius if using spheres\n              size     = 4,           # point size\n              axes     = FALSE,       # draw axes separately\n              xlab     = axes[1],\n              ylab     = axes[2],\n              zlab     = axes[3])       \n  # Draw axes\n  if (write!=FALSE){\n    rgl::axes3d(color = \"black\", labels = FALSE)                       \n  }else{\n    rgl::axes3d(color = \"black\", alpha=0.5, labels = FALSE) \n  }\n  \n  for (NAME in labels){\n    SUB = row.names(SAPCA$seq.space.PCA$coordinates)==NAME      # Label based on its row.name\n    rgl::text3d(subset(SAPCA$seq.space.PCA$coordinates[,plotPCs],subset=SUB), \n                text      = paste('---',NAME),   # data label text\n                font      = 2,                   # bold\n                color     = \"black\",             # colour\n                adj       = -rad/2)              # offset\n  }\n  \n  # Write html for interactive data\n  if (write!=FALSE){\n    rglwidget::.writeWebGL(write)                          \n  }\n}\n\n\nplot_3Dclosest <- function(SAPCA,\n                           sequence,\n                           plotPCs    = 1:3,\n                           measurePCs = 1:3,\n                           radius     = 1,\n                           n          = 10,\n                           write      = FALSE){\n\n  temp <- SAPCA$numerical.alignment$MSA[,1]\n  temp[1:length(temp)]                    <- \"white\"\n  temp[rownames(closest(SAPCA,sequence,PC = measurePCs, n = n))] <- \"red\"\n  temp[sequence]                          <- \"black\"\n\n  plot_3Dclusters(SAPCA,\n                  radius  = radius,\n                  plotPCs = plotPCs,\n                  labels  = sequence,\n                  col     = temp,\n                  write   = write)\n  \n}\n",
+    "created" : 1491287618332.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2041017983",
+    "id" : "6366623A",
+    "lastKnownWriteTime" : 1491283738,
+    "last_content_update" : 1491283738,
+    "path" : "C:/Users/T/OneDrive/1-Scripts/GitHub/DefSpace/R/Plots.R",
+    "project_path" : "R/Plots.R",
+    "properties" : {
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
