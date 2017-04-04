@@ -7,10 +7,7 @@ biocLite(c("Biostrings",
            "DECIPHER"))
 
 library(quiet=TRUE,"rgl")
-library(quiet=TRUE,"ape")
-library(quiet=TRUE,"cluster")
 library(quiet=TRUE,"mclust")
-library(quiet=TRUE,"gplots")
 library(quiet=TRUE,"ggplot2")
 library(quiet=TRUE,"Biostrings")
 library(quiet=TRUE,"DECIPHER")
@@ -118,12 +115,6 @@ plot_3Dclusters(SAPCA.add,
                 radius = c(2,rep(0.3,nrow(SAPCA.add$numerical.alignment$MSA)-1)))
 rgl::par3d(view)
 
-# Info
-as.fasta(SAPCA.add$numerical.alignment$MSA[rownames(closest(SAPCA.add,"query")),],
-         decolgap = TRUE)
-paste(sep="","Sequence appears to be a ",match," (max similarity = ",percent(newseq.match$aln.hit.score),")")
-
-
 # Plot comparison histograms ------------------------------------------------------------------
 aln.cistra <- c(newseq.tra$aln.all.score,newseq.cis$aln.all.score)
 hist(newseq.cis$aln.all.score,
@@ -134,7 +125,7 @@ hist(newseq.cis$aln.all.score,
                   0.02),
      col    = rgb(0,0.5,0,0.5), # green
      freq   = FALSE,
-     xlab   = "similarity",
+     xlab   = "Similarity",
      main   = "")
 hist(newseq.tra$aln.all.score,
      breaks = seq(min(range(aln.cistra)-0.5),
@@ -147,7 +138,12 @@ box()
 
 
 
-# End  ----------------------------------------------------------------------
+# Info  ----------------------------------------------------------------------
+
+as.fasta(SAPCA.add$numerical.alignment$MSA[rownames(closest(SAPCA.add,"query")),],
+         decolgap = TRUE)
+
+paste(sep="","Sequence appears to be a ",match," (max similarity = ",percent(newseq.match$aln.hit.score),")")
 
 
 
