@@ -59,11 +59,11 @@ rgl::par3d(view.tra)
 # Assign sequence class  ----------------------------------------------------------------------
 
 # Checkbox for whether to check alignments to both superfams
-if(is.cis){
+if(match=="cis-Defensin"){
   SAPCA.match  <- SAPCA.cis
   newseq.match <- seq.MSA.add(SAPCA.cis,sequence,"cis-Defensins")
   match        <- "cis-Defensin"
-}else if(is.tra){
+}else if(match=="trans-Defensin"){
   SAPCA.match  <- SAPCA.tra
   newseq.match <- seq.MSA.add(SAPCA.tra,sequence,"trans-Defensins")
   match        <- "trans-Defensin"
@@ -85,6 +85,19 @@ if(is.cis){
     match        <- "trans-Defensin"
   }
 }
+
+if(quantile(newseq.match$aln.all.score, 0.95)>=0.15){
+  print(paste(sep="",
+              "Sequence appears to be a ",
+              match,
+              ". Its similarity to the nearest sequence is ",
+              percent(newseq.match$aln.hit.score)))
+}else{
+  print(paste(sep="",
+              "Sequence may not be a defensin. Its similarity to any known defensin is only ",
+              percent(newseq.match$aln.hit.score)))
+}
+
 
 # Rotation, cluster assignment and completion for whichever SAPCA matches sequence
 newseq.r  <- seq.rotate    (SAPCA.match, newseq.match)
