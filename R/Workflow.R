@@ -152,12 +152,9 @@ box()
 
 
 # Info  ----------------------------------------------------------------------
+number=20
 
-as.fasta(SAPCA.add$numerical.alignment$MSA[rownames(closest(SAPCA.add,"query")),],
+as.fasta(SAPCA.add$numerical.alignment$MSA[rownames(closest(SAPCA.add,n = number,"query")),],
          decolgap = TRUE)
-
-paste(sep="","Sequence appears to be a ",match," (max similarity = ",percent(newseq.match$aln.hit.score),")")
-
-
 
 
