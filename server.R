@@ -47,7 +47,10 @@ cis.colours <- factor(c("blue",            #1 Plant extreme
   "maroon",          #6 Invert
   "red"))
 
-
+tra.colours <- factor(c("blue",     #1 Theta
+                        "red",      #2 Aalpha
+                        "orange",   #3 Beta
+                        "purple"))  #4
 
 shinyServer(function(input, output) {
   output$cisplot <- renderScatterplotThree({
@@ -55,7 +58,7 @@ shinyServer(function(input, output) {
   })
 
   output$traplot <- renderScatterplotThree({
-    plot_js_3Dclusters(SAPCA.tra, plotPCs = c(1,2,4),col=cis.colours)
+    plot_js_3Dclusters(SAPCA.tra, plotPCs = c(1,2,4),col=tra.colours)
   })
 
   output$CisPlot <- renderUI({

@@ -5,10 +5,7 @@ rgl::par3d(view.cis)
 
 # Plot trans (before user inputs any data)  ------------------------------------------------
 
-colours<-palette(c("blue",     #1 Theta
-                   "red",      #2 Aalpha
-                   "orange",   #3 Beta
-                   "purple"))  #4
+
 plot_3Dclusters(SAPCA.tra, plotPCs = c(1,2,4), axeslabels = c("","",""))
 rgl::par3d(view.tra)
 
