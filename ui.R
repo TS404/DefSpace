@@ -9,15 +9,11 @@ shinyUI(
         )
       ),
 
-      radioButtons("alignment_type","Perform superfam alignment:",c("CIS only"="align.cis","Trans only"="align.tra","Find best"="align.best")),
+      textAreaInput("user_sequence", "Your Sequence", "RTCESQSHRFKGPCSRDSNCATVCLTEGFSGGRCPWIPPRCFFFCTSPC", width = "600px"),
 
-      fluidRow(
-        column(8,uiOutput("CisPlot"))
-      ),
+     radioButtons("alignment_type","Perform superfam alignment:",c("Find best"="align.best","CIS only"="align.cis","Trans only"="align.tra")),
 
-      fluidRow(
-        column(8,uiOutput("TraPlot"))
-      )
+      uiOutput("PCAScatterPlot")
 
     )
   )

@@ -1,3 +1,94 @@
+numericise_MSA <- function(MSA,
+                           res.prop,
+                           cys){
+  seq.names <- rownames(MSA)
+  aln.len   <- ncol(MSA)
+  res.props <- colnames(res.prop)
+  res.avail <- row.names(res.prop)
+  # Numericise MSA based on res.prop
+  MSA.num.tall <- res.prop[t(MSA),]
+  # Name data types
+  rownames(MSA.num.tall) <- NULL
+  sequence     <- rep(x = seq.names, each  = aln.len)
+  residue      <- rep(x = 1:aln.len, times = length(seq.names))
+  MSA.num.tall <- cbind(sequence, residue, MSA.num.tall)
+  # Stack data into list of matrices
+  MSA.num.stack <- NULL
+  for (x in 1:length(res.props)) {
+    col.names <- paste(1:aln.len,
+                       rep(res.props[x],aln.len),
+                       sep = ".")
+    MSA.num.stack[[res.props[x]]] <- matrix(MSA.num.tall[,x+2],
+                                            ncol     = aln.len,
+                                            byrow    = TRUE,
+                                            dimnames = list(seq.names,
+                                                            col.names))
+  }
+  # Also reflow into single wide matrix
+  MSA.num.wide <- MSA.num.stack[[1]]
+  for (x in 2:length(res.props)) {
+    MSA.num.wide <- cbind(MSA.num.wide, MSA.num.stack[[res.props[x]]])
+  }
+
+
+  ############################.
+  # Scaling by property type #
+  ############################.
+
+  # Take means and variances of each property type
+  prop.means <- NULL
+  prop.vars  <- NULL
+  for (x in 1:length(res.props)) {
+    prop.means[x] <- mean(MSA.num.stack[[x]],na.rm=1)
+    prop.vars[x]  <- var(tidyr::gather(data.frame(MSA.num.stack[[x]]))[2],na.rm=1)
+  }
+  names(prop.means) <- res.props
+  names(prop.vars)  <- res.props
+
+  # Scale numericised MSA to prop.means and prop.vars
+  MSA.scale.stack <- NULL
+  for (x in 1:length(res.props)) {
+    MSA.scale.stack[[res.props[x]]] <- (MSA.num.stack[[res.props[x]]]- prop.means[x]) /
+      sqrt(prop.vars[x])
+  }
+
+  # Replace gaps (currently "NA") with column average
+  # Create na.colmean function
+  na.colmean<-function(x){
+    x[is.na(x)] <- mean(as.matrix(x),na.rm = 1)
+    x
+  }
+  # For each property of MSA.num.stack, apply na.colmean function to each matrix comlumn
+  for (x in 1:length(res.props)) {
+    MSA.scale.stack[[x]] <- apply(MSA.scale.stack[[x]],2,na.colmean)
+  }
+
+  # Also reflow into singe wide matrix for PCA
+  MSA.scale.wide <- MSA.scale.stack[[1]]
+  for (x in 2:length(res.props)) {
+    MSA.scale.wide <- cbind(MSA.scale.wide, MSA.scale.stack[[x]])
+  }
+
+
+  ##################.
+  # Alignment list #
+  ##################.
+
+  numerical.alignment <- list(MSA             = MSA,
+                              res.prop        = res.prop,
+                              MSA.num.stack   = MSA.num.stack,
+                              MSA.num.wide    = MSA.num.wide,
+                              MSA.scale.stack = MSA.scale.stack,
+                              MSA.scale.wide  = MSA.scale.wide,
+                              prop.means      = prop.means,
+                              prop.vars       = prop.vars,
+                              seq.names       = seq.names,
+                              aln.len         = aln.len)
+  numerical.alignment
+}
+
+
+
 closest <- function (SAPCA,
                      sequence,
                      PC = 1:3,
@@ -82,13 +173,13 @@ as.AAstringSet<-function(MSA, degap=FALSE){
 
 
 
-seq.MSA.add <- function(SAPCA,sequence,SAPCAname=NULL){
+seq.MSA.add <- function(SAPCA,sequence,SAPCAname=NULL,BLOSUM40){
   MSA   <- SAPCA$numerical.alignment$MSA
   MSA2  <- as.AAstringSet(MSA,degap = TRUE)
   seqs  <- nrow(MSA)
   seq   <- as.AAstring(sequence, degap=FALSE)
   seq.d <- as.AAstring(sequence, degap=TRUE)
-  BLOSUM40 <- blosum()
+  # BLOSUM40 <- blosum()
 
   aln.all <- Biostrings::pairwiseAlignment(MSA2,
                                            seq.d,
@@ -301,6 +392,17 @@ seq.add.full <- function (SAPCA,sequence,SAPCAname=NULL){
 }
 
 
+
+# #BLOSUM40
+# blosum <- function(file="C:\\Users\\T\\OneDrive\\0-Sequences\\2-PCA\\0-Raw data and scalers\\0 - BLOSUM40.csv"){
+#   BLOSUM40 <- read.csv(file)
+#   BLOSUM40.names <- BLOSUM40[,1]
+#   BLOSUM40 <- BLOSUM40[,-1]
+#   BLOSUM40 <- as.matrix(BLOSUM40)
+#   rownames(BLOSUM40)<-BLOSUM40.names
+#   colnames(BLOSUM40)<-BLOSUM40.names
+#   BLOSUM40
+# }
 
 
 
