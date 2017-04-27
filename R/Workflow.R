@@ -4,7 +4,8 @@
 # Activate packages
 source("https://bioconductor.org/biocLite.R")
 biocLite(c("Biostrings",
-           "DECIPHER"))
+           "DECIPHER",
+           "msa"))
 
 suppressMessages(library(quiet=TRUE,"mclust"))
 library(quiet=TRUE,"rgl")
