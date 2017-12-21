@@ -1,11 +1,27 @@
-Package: test
+Package: DefSpace
 Type: Package
-Title: What the Package Does (Title Case)
-Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
-Encoding: UTF-8
-LazyData: true
+Title: A Shiny Rstudio Application for Exploring Defensin Sequence Space
+Version: 1.0.0
+Author: Thomas Shafee
+Maintainer: thomas.shafee@gmail.com
+URL: https://github.com/TS404/DefSpace
+BugReports: https://github.com/TS404/DefSpace/issues
+Description: This shiny app runs in Rstudio, and allows interactive querying of the defensin sequence space maps.
+    For the version able to run online (using RGLwidget) see [this repo](https://github.com/TS404/DefSpaceShiny),
+    which runs at [this web address](https://ts404.shinyapps.io/defspace).
+    
+    Publication: in review
+
+License: GPL (>= 2)
+
+Depends: R (>= 2.10)
+Imports:
+    shiny,
+    rglwidget,
+    rgl,
+    ggplot2,
+    Biostrings,
+    DECIPHER,
+    mclust,
+    tidyr,
+    rJava
